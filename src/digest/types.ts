@@ -16,5 +16,3 @@ export type RunLogLine = {
   owner: string | null;
   error?: string;
 };
-
-export function readNight(runsDir: string, night: string): Promise<DigestRow[]>;
