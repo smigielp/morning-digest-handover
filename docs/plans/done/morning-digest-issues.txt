@@ -1,0 +1,10 @@
+# Issues for morning-digest plan
+
+#1 Run log reader: types (CLOSED)
+#2 Run log reader: implementation (CLOSED)
+#3 Digest page: GET /digest/:night (CLOSED)
+#4 Digest API: GET /api/digest/:night (CLOSED)
+#5 Status board: digest links (CLOSED)
+#6 Route tests (CLOSED)
+#7 Preview for review (OPEN)
+#8 Clean up (OPEN)
