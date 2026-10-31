@@ -4,19 +4,46 @@ import { lane } from './lane.js';
 import { readStatus } from './status.js';
 import { Layout } from './views/layout.js';
 import { StatusBoard } from './views/status.js';
+import { DigestPage } from './views/digest.js';
+import { readNight } from './digest/reader.js';
 
 export function createApp(config: RigConfig = loadConfig()) {
   const app = new Hono();
 
   app.get('/health', (c) => c.json({ ok: true, lane: lane().id }));
 
-  app.get('/', (c) =>
-    c.html(
+  app.get('/', async (c) => {
+    const status = await readStatus(config);
+    return c.html(
       <Layout title="status" lane={lane()}>
-        <StatusBoard status={readStatus(config)} />
+        <StatusBoard status={status} />
       </Layout>,
-    ),
-  );
+    );
+  });
+
+  app.get('/digest/:night', async (c) => {
+    const night = c.req.param('night');
+    try {
+      const rows = await readNight(config.runsDir, night);
+      return c.html(
+        <Layout title={`digest · ${night}`} lane={lane()}>
+          <DigestPage night={night} rows={rows} />
+        </Layout>,
+      );
+    } catch (error) {
+      return c.notFound();
+    }
+  });
+
+  app.get('/api/digest/:night', async (c) => {
+    const night = c.req.param('night');
+    try {
+      const rows = await readNight(config.runsDir, night);
+      return c.json(rows);
+    } catch (error) {
+      return c.notFound();
+    }
+  });
 
   return app;
 }
